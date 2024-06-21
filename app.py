@@ -2,9 +2,31 @@ import os
 from flask import Flask, render_template, request
 import torch
 from torchvision import transforms
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import Dataset, DataLoader
+from torchvision import models, transforms
 import cv2
 import numpy as np
-from FacialLandmarkModel import FacialLandmarkModel
+#from FacialLandmarkModel import FacialLandmarkModel
+
+
+class FacialLandmarkModel(nn.Module):
+    def __init__(self, num_measurements):
+        super(FacialLandmarkModel, self).__init__()
+        self.resnet = models.resnet18(pretrained=True)
+        num_ftrs = self.resnet.fc.in_features
+        self.resnet.fc = nn.Identity()  # Replace the linear layer with an identity operation
+        self.fc_measurements = nn.Linear(num_ftrs, num_measurements)
+
+    def forward(self, x):
+        x = self.resnet(x)
+        x = x.view(x.size(0), -1)  # Reshape x to (batch_size, num_features)
+        landmark_predictions = self.resnet.fc(x)  # No need for squeeze or permute
+        measurements_predictions = self.fc_measurements(x)
+        return landmark_predictions, measurements_predictions
+
 
 app = Flask(__name__)
 
@@ -13,6 +35,7 @@ num_measurements = 12  # Replace with the actual number of measurements
 model = FacialLandmarkModel(num_measurements=num_measurements)
 model.load_state_dict(torch.load("facial_landmark_model.pth"))
 model.eval()
+
 
 # Define the transformations
 transform = transforms.Compose([
@@ -66,6 +89,6 @@ def index():
 
     return render_template('index.html')
 
-#if __name__ == '__main__':
-#    app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
     
