@@ -57,11 +57,6 @@ The model is based on a Convolutional Neural Network (CNN) architecture, utilizi
 - **Model Accuracy**: Achieved an 82% accuracy rate.
 - **Error Reduction**: Reduced landmark detection error by 30% through model optimization.
 
-## Results
-- **Accuracy**: 82% in predicting cephalometric measurements.
-- **Error Reduction**: 30% reduction in landmark detection errors.
-- **Impact**: Potential to replace traditional x-ray methods, enhancing patient safety.
-
 ## Technologies
 - **Programming Languages**: Python
 - **Frameworks and Libraries**: PyTorch, Flask, Jupyter Notebook, Pandas, NumPy
